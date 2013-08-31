@@ -1,4 +1,6 @@
 #!/usr/bin/python
+import math
+import decimal
 import urllib
 import sys
 import re
@@ -171,7 +173,9 @@ def calc_moving_average(dogname):
       	    data.append(rat)
 
       klist=list(movingaverage(data,period))
+      klist=[int(elem) for elem in klist ]
       klist2=list(movingaverage(data_calctime,period))
+      klist2=[round(elem,2) for elem in klist2]
       dogname=dogname.replace('%20','+')
       v=(dogname,klist)
       v2=(dogname,klist2)
