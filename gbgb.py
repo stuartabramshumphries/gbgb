@@ -1,8 +1,5 @@
 #!/usr/bin/python
-import math
-import decimal
 import urllib
-import sys
 import re
 import os
 from movingaverage import *
@@ -146,32 +143,35 @@ def calc_moving_average(dogname):
       'IV':{1:138,2:120,3:112,4:94,5:86,6:78}
       }
 
-      period=2 # arbitrary here - maybe ask what moving average you want at the start?
+      period=14 # arbitrary here - maybe ask what moving average you want at the start?
       try:
        fd=open(dogname +"-data.csv","r")
        fd2=open("ratings.out.csv","a")
        fd3=open("calctime-mvavg.out.csv","a")
       except:
-     	pass 
+     	 pass 
       dat=fd.readlines()
       data=[]
+      #print "length of data is ", +len(dat)
+      
       data_calctime=[]
       for line in dat:
 	 splitline=line.split(",")
 	 if len(splitline) == 7:
 	  pos=splitline[3]
-	  brk=splitline[2]
+#	  brk=splitline[2]
 	  grade=splitline[5]
 	  pos=pos[:-2]
       	  pos=int(pos)
 	  calt=splitline[6]
-	  calctime = float(calt)
+	  calctime = float(calt) 
 	  rat=ratings[grade][pos]
       	  if calctime != 0:
       	    data_calctime.append(calctime)
       	  if int(rat) != 0:
       	    data.append(rat)
-
+      if len(dat) <period:
+          period=len(data)
       klist=list(movingaverage(data,period))
       klist=[int(elem) for elem in klist ]
       klist2=list(movingaverage(data_calctime,period))
