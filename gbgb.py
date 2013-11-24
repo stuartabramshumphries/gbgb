@@ -98,7 +98,8 @@ def extractdata(filedogname,dogname):
 def calc_moving_average(dogname):
       
       ''' basically movingaverage(data,period) , where data is a list/tuple? '''
-      
+      fd4=open("./grades.csv","a")
+
       ratings={
       'A1':{1:138,2:120,3:112,4:94,5:86,6:78},
       'A2':{1:130,2:112,3:104,4:86,5:78,6:70},
@@ -155,6 +156,7 @@ def calc_moving_average(dogname):
       #print "length of data is ", +len(dat)
       
       data_calctime=[]
+      cnt=0
       for line in dat:
 	 splitline=line.split(",")
 	 if len(splitline) == 7:
@@ -166,10 +168,14 @@ def calc_moving_average(dogname):
 	  calt=splitline[6]
 	  calctime = float(calt) 
 	  rat=ratings[grade][pos]
+	  if  cnt==0:
+	              datal=dogname+","+grade+"\n"
+		      fd4.write(datal)
       	  if calctime != 0:
       	    data_calctime.append(calctime)
       	  if int(rat) != 0:
       	    data.append(rat)
+	  cnt+=1  
       if len(dat) <period:
           period=len(data)
       klist=list(movingaverage(data,period))
@@ -187,6 +193,7 @@ def calc_moving_average(dogname):
       fd3.write("\n")
       fd2.close()
       fd3.close()
+      fd4.close()
       
 
 ''' add a check to see if file exists, then remove if it does, else it'll error here '''
