@@ -156,8 +156,10 @@ def calc_moving_average(dogname):
       #print "length of data is ", +len(dat)
       
       data_calctime=[]
-      cnt=0
+      cnt=1
+
       for line in dat:
+#	 print cnt,len(dat),cnt-len(dat)
 	 splitline=line.split(",")
 	 if len(splitline) == 7:
 	  pos=splitline[3]
@@ -168,14 +170,17 @@ def calc_moving_average(dogname):
 	  calt=splitline[6]
 	  calctime = float(calt) 
 	  rat=ratings[grade][pos]
-	  if  cnt==0:
-	              datal=dogname+","+grade+"\n"
-		      fd4.write(datal)
+	  datal=dogname+","+grade+"\n"
+	  if cnt==len(dat):
+	   fd4.write(datal)
       	  if calctime != 0:
       	    data_calctime.append(calctime)
       	  if int(rat) != 0:
       	    data.append(rat)
-	  cnt+=1  
+	  ''' want to print just last line '''
+	  ''' last_line = file(PATH_TO_FILE, "r").readlines()[-1]
+	  '''
+         cnt+=1
       if len(dat) <period:
           period=len(data)
       klist=list(movingaverage(data,period))
