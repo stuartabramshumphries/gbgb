@@ -144,11 +144,14 @@ def calc_moving_average(dogname):
       'IV':{1:138,2:120,3:112,4:94,5:86,6:78}
       }
 
+# we now want to add the moving average of the actual, not calculated time and also for the split time.
       period=14 # arbitrary here - maybe ask what moving average you want at the start?
       try:
        fd=open(dogname +"-data.csv","r")
        fd2=open("ratings.out.csv","a")
        fd3=open("calctime-mvavg.out.csv","a")
+       fd3a=open("actualtime-mvavg.out.csv","a")
+       fd3s=open("splits-mvavg.out.csv","a")
       except:
      	 pass 
       dat=fd.readlines()
@@ -198,6 +201,8 @@ def calc_moving_average(dogname):
       fd3.write("\n")
       fd2.close()
       fd3.close()
+      fd3a.close()
+      fd3s.close()
       fd4.close()
       
 
