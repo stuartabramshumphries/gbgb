@@ -145,7 +145,7 @@ def calc_moving_average(dogname):
       }
 
 # we now want to add the moving average of the actual, not calculated time and also for the split time.
-      period=14 # arbitrary here - maybe ask what moving average you want at the start?
+      period=4 # arbitrary here - maybe ask what moving average you want at the start?
       try:
        fd=open(dogname +"-data.csv","r")
        fd2=open("ratings.out.csv","a")
@@ -159,14 +159,18 @@ def calc_moving_average(dogname):
       #print "length of data is ", +len(dat)
       
       data_calctime=[]
+      data_brkn=[]
       cnt=1
 
       for line in dat:
-#	 print cnt,len(dat),cnt-len(dat)
 	 splitline=line.split(",")
 	 if len(splitline) == 7:
 	  pos=splitline[3]
-#	  brk=splitline[2]
+          brk=splitline[2]
+          if brk == '&nbsp;':
+		  brk='0'
+	  brkn=float(brk)
+	  data_brkn.append(brkn)
 	  grade=splitline[5]
 	  pos=pos[:-2]
       	  pos=int(pos)
@@ -190,15 +194,24 @@ def calc_moving_average(dogname):
       klist=[int(elem) for elem in klist ]
       klist2=list(movingaverage(data_calctime,period))
       klist2=[round(elem,2) for elem in klist2]
+      klist3=list(movingaverage(data_brkn,period))
+      klist3=[round(elem,2) for elem in klist3]
       dogname=dogname.replace('%20','+')
       v=(dogname,klist)
       v2=(dogname,klist2)
+      v3=(dogname,klist3)
       value=str(v)
       value2=str(v2)
+      value3=str(v3)
       fd2.write(value)
       fd3.write(value2)
+      fd3s.write(value3)
       fd2.write("\n")
       fd3.write("\n")
+      fd3s.write("\n")
+
+
+
       fd2.close()
       fd3.close()
       fd3a.close()
