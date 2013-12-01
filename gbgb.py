@@ -234,5 +234,10 @@ if os.path.exists("./ratings.out.csv"):
 if os.path.exists("./calctime-mvavg.out.csv"):
  os.remove("calctime-mvavg.out.csv")
 
+if os.path.exists("./splits-mvavg.out.csv"):
+ os.remove("splits-mvavg.out.csv")
+
+if os.path.exists("./actualtime-mvavg.out.csv"):
+ os.remove("actualtime-mvavg.out.csv")
 getdognames()
 
