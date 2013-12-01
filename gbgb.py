@@ -190,12 +190,19 @@ def calc_moving_average(dogname):
          cnt+=1
       if len(dat) <period:
           period=len(data)
+
       klist=list(movingaverage(data,period))
       klist=[int(elem) for elem in klist ]
+
       klist2=list(movingaverage(data_calctime,period))
       klist2=[round(elem,2) for elem in klist2]
+
       klist3=list(movingaverage(data_brkn,period))
       klist3=[round(elem,2) for elem in klist3]
+
+      klist4=list(movingaverage(data_brkn,period))
+      klist4=[round(elem,2) for elem in klist4]
+
       dogname=dogname.replace('%20','+')
       v=(dogname,klist)
       v2=(dogname,klist2)
