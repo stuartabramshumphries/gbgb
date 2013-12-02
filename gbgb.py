@@ -9,9 +9,10 @@ def main():
     
     getdognames()
     
-    for name in "./ratings.out.csv","./calctime-mvavg.out.csv","./splits-mvavg.out.csv","./actualtime-mvavg.out.csv":
+'''    for name in "./ratings.out.csv","./calctime-mvavg.out.csv","./splits-mvavg.out.csv","./actualtime-mvavg.out.csv":
         if os.path.exists(name):
             os.remove(name)
+            '''
 
 def analyse_data(dogname): 
         '''  this function extracts the dog data we want from its history '''
@@ -30,11 +31,11 @@ def analyse_data(dogname):
                 npstr=npstr.split('<td style=')[0]
                 spltdata=npstr.split('"')
                 if len(spltdata) >10:
-                 if spltdata[24] == '&nbsp;':
-                  spltdata[24]='0'
+                 if spltdata[19] == '&nbsp;':
+                  spltdata[19]='0'
                  if spltdata[27] == '&nbsp;':
                   spltdata[27]='0'
-                 strg=spltdata[1]+","+spltdata[3]+","+spltdata[7] +","+spltdata[9]+","+spltdata[19]+","+spltdata[25]+","+spltdata[24]+","+spltdata[27]
+                 strg=spltdata[1]+","+spltdata[3]+","+spltdata[7] +","+spltdata[9]+","+spltdata[19]+","+spltdata[25]+","+spltdata[19]+","+spltdata[27]
                  strg2=strg.replace('"','')
                  fd.write( strg2 )
                  fd.write( "\n" )
@@ -161,6 +162,7 @@ def calc_moving_average(dogname):
        fd3=open("calctime-mvavg.out.csv","a")
        fd3a=open("actualtime-mvavg.out.csv","a")
        fd3s=open("splits-mvavg.out.csv","a")
+       fd3wt=open("winnerstime-mvavg.out.csv","a")
       except:
               pass 
       dat=fd.readlines()
@@ -169,6 +171,7 @@ def calc_moving_average(dogname):
       
       data_calctime=[]
       data_brkn=[]
+      data_wint=[]
       cnt=1
 
       for line in dat:
@@ -184,13 +187,17 @@ def calc_moving_average(dogname):
           pos=pos[:-2]
           pos=int(pos)
           calt=splitline[7]
+          wint=splitline[6]
           calctime = float(calt) 
+          winnerstime = float(wint) 
           rat=ratings[grade][pos]
           datal=dogname+","+grade+"\n"
           if cnt==len(dat):
            fd4.write(datal)
           if calctime != 0:
                   data_calctime.append(calctime)
+          if winnerstime != 0:
+                  data_wint.append(winnerstime)
           if int(rat) != 0:
                   data.append(rat)
           ''' want to print just last line '''
@@ -209,22 +216,26 @@ def calc_moving_average(dogname):
       klist3=list(movingaverage(data_brkn,period))
       klist3=[round(elem,2) for elem in klist3]
 
-      klist4=list(movingaverage(data_brkn,period))
+      klist4=list(movingaverage(data_wint,period))
       klist4=[round(elem,2) for elem in klist4]
 
       dogname=dogname.replace('%20','+')
       v=(dogname,klist)
       v2=(dogname,klist2)
       v3=(dogname,klist3)
+      v4=(dogname,klist4)
       value=str(v)
       value2=str(v2)
       value3=str(v3)
+      value4=str(v4)
       fd2.write(value)
       fd3.write(value2)
       fd3s.write(value3)
+      fd3wt.write(value4)
       fd2.write("\n")
       fd3.write("\n")
       fd3s.write("\n")
+      fd3wt.write("\n")
 
 
 
@@ -232,7 +243,7 @@ def calc_moving_average(dogname):
       fd3.close()
       fd3a.close()
       fd3s.close()
-      fd4.close()
+      fd3wt.close()
 
 if __name__ == '__main__':
 	main()
