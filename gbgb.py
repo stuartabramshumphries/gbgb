@@ -5,92 +5,109 @@ import os
 from movingaverage import *
 from multiprocessing import Process
 
+def main():
+    
+    getdognames()
+    ''' add a check to see if file exists, then remove if it does, else it'll error here '''
+    
+    if os.path.exists("./ratings.out.csv"):
+     os.remove("ratings.out.csv")
+    
+    if os.path.exists("./calctime-mvavg.out.csv"):
+     os.remove("calctime-mvavg.out.csv")
+    
+    if os.path.exists("./splits-mvavg.out.csv"):
+     os.remove("splits-mvavg.out.csv")
+    
+    if os.path.exists("./actualtime-mvavg.out.csv"):
+     os.remove("actualtime-mvavg.out.csv")
+
 def analyse_data(dogname): 
-	'''  this function extracts the dog data we want from its history '''
-	count=0
-	#dogname=dogname.replace(" ","%20")
-	dogname=dogname.replace("%20","+")
-	fd=open(dogname +"-data.csv","w")
-	fd3=open(dogname + "-rh.txt","r+")
-	data=fd3.readlines()
-	fd3.close()
-	for i,line in enumerate(data):
-		nstr=line.replace('<td align="center" valign="middle" ','')
-		ostr=nstr.replace('<td align="center" ','')
-		pstr=ostr.replace('<td align="left" ','')
-		nnstr=pstr.replace('style="white-space:nowrap;">','"')
-		npstr=nnstr.replace('</td>','" ')
-		npstr=npstr.split('<td style=')[0]
-		spltdata=npstr.split('"')
-		if len(spltdata) >10:
-		 if spltdata[27] == '&nbsp;':
-		  spltdata[27]='0'
-		 strg=spltdata[1]+","+spltdata[3]+","+spltdata[7] +","+spltdata[9]+","+spltdata[19]+","+spltdata[25]+","+spltdata[27]
-		 strg2=strg.replace('"','')
-		 fd.write( strg2 )
-		 fd.write( "\n" )
-		
-	
-	fd.close()
-	calc_moving_average(dogname)
-	os.remove(dogname + "-rh.txt")
+        '''  this function extracts the dog data we want from its history '''
+        count=0
+        #dogname=dogname.replace(" ","%20")
+        dogname=dogname.replace("%20","+")
+        fd=open(dogname +"-data.csv","w")
+        fd3=open(dogname + "-rh.txt","r+")
+        data=fd3.readlines()
+        fd3.close()
+        for i,line in enumerate(data):
+                nstr=line.replace('<td align="center" valign="middle" ','')
+                ostr=nstr.replace('<td align="center" ','')
+                pstr=ostr.replace('<td align="left" ','')
+                nnstr=pstr.replace('style="white-space:nowrap;">','"')
+                npstr=nnstr.replace('</td>','" ')
+                npstr=npstr.split('<td style=')[0]
+                spltdata=npstr.split('"')
+                if len(spltdata) >10:
+                 if spltdata[27] == '&nbsp;':
+                  spltdata[27]='0'
+                 strg=spltdata[1]+","+spltdata[3]+","+spltdata[7] +","+spltdata[9]+","+spltdata[19]+","+spltdata[25]+","+spltdata[27]
+                 strg2=strg.replace('"','')
+                 fd.write( strg2 )
+                 fd.write( "\n" )
+                
+        
+        fd.close()
+        calc_moving_average(dogname)
+        os.remove(dogname + "-rh.txt")
 dognames="./dognames.txt"
 
 def getdognames():
-	''' this function reads a list of dognames from file '''
-	dogname=open(dognames,"r").readlines()
-	count=0
-	for n in dogname:
-		count+=1
-		print n
-		readdogs(n)
-#	if count != 6:
-#		print "number of dogs is ",count
-#		print "currently only working on 6 dogs, will change in future!"
-#		print "exiting "
-#		exit()
+        ''' this function reads a list of dognames from file '''
+        dogname=open(dognames,"r").readlines()
+        count=0
+        for n in dogname:
+                count+=1
+                print n
+                readdogs(n)
+#        if count != 6:
+#                print "number of dogs is ",count
+#                print "currently only working on 6 dogs, will change in future!"
+#                print "exiting "
+#                exit()
 
 def readdogs(dogname):
-	'''  this function reads the primary web page for eachdog '''
-	dogname=dogname.replace(" ","%20")
-	f=urllib.urlopen("http://www.gbgb.org.uk/raceCard.aspx?dogName="+dogname)
-	ddogname=dogname.rstrip()+".txt"
-	webout=open(ddogname,"w")
-	s=f.read()
-	webout.write(s)
-	f.close()
-	webout.close()
-	extractdata(ddogname,dogname)
-	#os.remove(ddogname)
+        '''  this function reads the primary web page for eachdog '''
+        dogname=dogname.replace(" ","%20")
+        f=urllib.urlopen("http://www.gbgb.org.uk/raceCard.aspx?dogName="+dogname)
+        ddogname=dogname.rstrip()+".txt"
+        webout=open(ddogname,"w")
+        s=f.read()
+        webout.write(s)
+        f.close()
+        webout.close()
+        extractdata(ddogname,dogname)
+        #os.remove(ddogname)
 
 def extractdata(filedogname,dogname):
-	'''  what this function does is to format the downloaded history - basically get rid of the extraneous html '''
-	dogname=dogname.rstrip()
-	dogname=dogname.replace("%20","+")
-	flag = 1
-	fd=open(filedogname,"r")	
-	filedogname2=dogname + "-rh.txt"
-	fd2=open(filedogname2,"w")	
-	data=fd.readlines()
-	for line in data:
- 	  #if '<td class="RCelement"><a href="' in line:
- 	  if '<td align="center"' in line:
- 	   fd2.write(line)
- 	   flag = 0
- 	  if re.search('\s+\<\/tbody\>',line): 
- 	   flag = 1
-	  if re.search('\s+\<\/tr\>\<tr class="Grid',line):
-	   flag = 1
- 	  if not flag and not '<td align="center"' in line:
- 	   fd2.write(line)
+        '''  what this function does is to format the downloaded history - basically get rid of the extraneous html '''
+        dogname=dogname.rstrip()
+        dogname=dogname.replace("%20","+")
+        flag = 1
+        fd=open(filedogname,"r")        
+        filedogname2=dogname + "-rh.txt"
+        fd2=open(filedogname2,"w")        
+        data=fd.readlines()
+        for line in data:
+           #if '<td class="RCelement"><a href="' in line:
+           if '<td align="center"' in line:
+            fd2.write(line)
+            flag = 0
+           if re.search('\s+\<\/tbody\>',line): 
+            flag = 1
+           if re.search('\s+\<\/tr\>\<tr class="Grid',line):
+            flag = 1
+           if not flag and not '<td align="center"' in line:
+            fd2.write(line)
 
 
-	fd.close()
-	os.remove(filedogname)
-	fd2.close()
-	analyse_data(dogname)
+        fd.close()
+        os.remove(filedogname)
+        fd2.close()
+        analyse_data(dogname)
 
-	 
+         
 
 
 
@@ -153,7 +170,7 @@ def calc_moving_average(dogname):
        fd3a=open("actualtime-mvavg.out.csv","a")
        fd3s=open("splits-mvavg.out.csv","a")
       except:
-     	 pass 
+              pass 
       dat=fd.readlines()
       data=[]
       #print "length of data is ", +len(dat)
@@ -163,30 +180,30 @@ def calc_moving_average(dogname):
       cnt=1
 
       for line in dat:
-	 splitline=line.split(",")
-	 if len(splitline) == 7:
-	  pos=splitline[3]
+         splitline=line.split(",")
+         if len(splitline) == 7:
+          pos=splitline[3]
           brk=splitline[2]
           if brk == '&nbsp;':
-		  brk='0'
-	  brkn=float(brk)
-	  data_brkn.append(brkn)
-	  grade=splitline[5]
-	  pos=pos[:-2]
-      	  pos=int(pos)
-	  calt=splitline[6]
-	  calctime = float(calt) 
-	  rat=ratings[grade][pos]
-	  datal=dogname+","+grade+"\n"
-	  if cnt==len(dat):
-	   fd4.write(datal)
-      	  if calctime != 0:
-      	    data_calctime.append(calctime)
-      	  if int(rat) != 0:
-      	    data.append(rat)
-	  ''' want to print just last line '''
-	  ''' last_line = file(PATH_TO_FILE, "r").readlines()[-1]
-	  '''
+                  brk='0'
+          brkn=float(brk)
+          data_brkn.append(brkn)
+          grade=splitline[5]
+          pos=pos[:-2]
+          pos=int(pos)
+          calt=splitline[6]
+          calctime = float(calt) 
+          rat=ratings[grade][pos]
+          datal=dogname+","+grade+"\n"
+          if cnt==len(dat):
+           fd4.write(datal)
+          if calctime != 0:
+                  data_calctime.append(calctime)
+          if int(rat) != 0:
+                  data.append(rat)
+          ''' want to print just last line '''
+          ''' last_line = file(PATH_TO_FILE, "r").readlines()[-1]
+          '''
          cnt+=1
       if len(dat) <period:
           period=len(data)
@@ -224,20 +241,6 @@ def calc_moving_average(dogname):
       fd3a.close()
       fd3s.close()
       fd4.close()
-      
 
-''' add a check to see if file exists, then remove if it does, else it'll error here '''
-
-if os.path.exists("./ratings.out.csv"):
- os.remove("ratings.out.csv")
-
-if os.path.exists("./calctime-mvavg.out.csv"):
- os.remove("calctime-mvavg.out.csv")
-
-if os.path.exists("./splits-mvavg.out.csv"):
- os.remove("splits-mvavg.out.csv")
-
-if os.path.exists("./actualtime-mvavg.out.csv"):
- os.remove("actualtime-mvavg.out.csv")
-getdognames()
-
+if __name__ == '__main__':
+	main()
