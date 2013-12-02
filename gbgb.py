@@ -7,12 +7,12 @@ from multiprocessing import Process
 
 def main():
     
-    getdognames()
-    
-'''    for name in "./ratings.out.csv","./calctime-mvavg.out.csv","./splits-mvavg.out.csv","./actualtime-mvavg.out.csv":
+    for name in "./ratings.out.csv","./calctime-mvavg.out.csv","./splits-mvavg.out.csv","./actualtime-mvavg.out.csv","winnerstime-mvavg.out.csv":
         if os.path.exists(name):
             os.remove(name)
-            '''
+
+    getdognames()
+    
 
 def analyse_data(dogname): 
         '''  this function extracts the dog data we want from its history '''
