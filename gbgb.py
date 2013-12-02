@@ -8,24 +8,14 @@ from multiprocessing import Process
 def main():
     
     getdognames()
-    ''' add a check to see if file exists, then remove if it does, else it'll error here '''
     
-    if os.path.exists("./ratings.out.csv"):
-     os.remove("ratings.out.csv")
-    
-    if os.path.exists("./calctime-mvavg.out.csv"):
-     os.remove("calctime-mvavg.out.csv")
-    
-    if os.path.exists("./splits-mvavg.out.csv"):
-     os.remove("splits-mvavg.out.csv")
-    
-    if os.path.exists("./actualtime-mvavg.out.csv"):
-     os.remove("actualtime-mvavg.out.csv")
+    for name in "./ratings.out.csv","./calctime-mvavg.out.csv","./splits-mvavg.out.csv","./actualtime-mvavg.out.csv":
+        if os.path.exists(name):
+            os.remove(name)
 
 def analyse_data(dogname): 
         '''  this function extracts the dog data we want from its history '''
         count=0
-        #dogname=dogname.replace(" ","%20")
         dogname=dogname.replace("%20","+")
         fd=open(dogname +"-data.csv","w")
         fd3=open(dogname + "-rh.txt","r+")
@@ -40,9 +30,11 @@ def analyse_data(dogname):
                 npstr=npstr.split('<td style=')[0]
                 spltdata=npstr.split('"')
                 if len(spltdata) >10:
+                 if spltdata[24] == '&nbsp;':
+                  spltdata[24]='0'
                  if spltdata[27] == '&nbsp;':
                   spltdata[27]='0'
-                 strg=spltdata[1]+","+spltdata[3]+","+spltdata[7] +","+spltdata[9]+","+spltdata[19]+","+spltdata[25]+","+spltdata[27]
+                 strg=spltdata[1]+","+spltdata[3]+","+spltdata[7] +","+spltdata[9]+","+spltdata[19]+","+spltdata[25]+","+spltdata[24]+","+spltdata[27]
                  strg2=strg.replace('"','')
                  fd.write( strg2 )
                  fd.write( "\n" )
@@ -51,9 +43,9 @@ def analyse_data(dogname):
         fd.close()
         calc_moving_average(dogname)
         os.remove(dogname + "-rh.txt")
-dognames="./dognames.txt"
 
 def getdognames():
+        dognames="./dognames.txt"
         ''' this function reads a list of dognames from file '''
         dogname=open(dognames,"r").readlines()
         count=0
@@ -181,7 +173,7 @@ def calc_moving_average(dogname):
 
       for line in dat:
          splitline=line.split(",")
-         if len(splitline) == 7:
+         if len(splitline) == 8:
           pos=splitline[3]
           brk=splitline[2]
           if brk == '&nbsp;':
@@ -191,7 +183,7 @@ def calc_moving_average(dogname):
           grade=splitline[5]
           pos=pos[:-2]
           pos=int(pos)
-          calt=splitline[6]
+          calt=splitline[7]
           calctime = float(calt) 
           rat=ratings[grade][pos]
           datal=dogname+","+grade+"\n"
