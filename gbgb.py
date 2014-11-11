@@ -35,14 +35,14 @@ def analyse_data(dogname):
                   spltdata[19]='0'
                  if spltdata[27] == '&nbsp;':
                   spltdata[27]='0'
-                 strg=spltdata[1]+","+spltdata[3]+","+spltdata[7] +","+spltdata[9]+","+spltdata[19]+","+spltdata[25]+","+spltdata[19]+","+spltdata[27]
+                 strg=spltdata[1]+","+spltdata[3]+","+spltdata[7] +","+spltdata[9]+","+spltdata[21]+","+spltdata[19]+","+spltdata[25]+","+spltdata[19]+","+spltdata[27]
                  strg2=strg.replace('"','')
                  fd.write( strg2 )
                  fd.write( "\n" )
                 
         
         fd.close()
-        calc_moving_average(dogname)
+        #calc_moving_average(dogname)
         os.remove(dogname + "-rh.txt")
 
 def getdognames():
