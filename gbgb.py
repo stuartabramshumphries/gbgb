@@ -42,7 +42,7 @@ def analyse_data(dogname):
                 
         
         fd.close()
-        #calc_moving_average(dogname)
+        calc_moving_average(dogname)
         os.remove(dogname + "-rh.txt")
 
 def getdognames():
@@ -176,18 +176,18 @@ def calc_moving_average(dogname):
 
       for line in dat:
          splitline=line.split(",")
-         if len(splitline) == 8:
+         if len(splitline) == 9:
           pos=splitline[3]
           brk=splitline[2]
           if brk == '&nbsp;':
                   brk='0'
           brkn=float(brk)
           data_brkn.append(brkn)
-          grade=splitline[5]
+          grade=splitline[6]
           pos=pos[:-2]
           pos=int(pos)
-          calt=splitline[7]
-          wint=splitline[6]
+          calt=splitline[8]
+          wint=splitline[7]
           calctime = float(calt) 
           winnerstime = float(wint) 
           rat=ratings[grade][pos]
