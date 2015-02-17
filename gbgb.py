@@ -19,7 +19,7 @@ def analyse_data(dogname):
         '''  this function extracts the dog data we want from its history '''
         count=0
         dogname=dogname.replace("%20","+")
-        fd=open(dogname +"-data.csv","w")
+        fd=open(dogname +"-data.xlxs","w")
         fd3=open(dogname + "-rh.txt","r+")
         data=fd3.readlines()
         fd3.close()
@@ -50,7 +50,7 @@ def analyse_data(dogname):
           
         
         fd.close()
-    #    calc_moving_average(dogname)
+        #calc_moving_average(dogname)
         os.remove(dogname + "-rh.txt")
 
 def getdognames():
