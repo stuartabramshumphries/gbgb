@@ -2,6 +2,7 @@
 import urllib
 import re
 import os
+import sys
 from movingaverage import *
 from multiprocessing import Process
 
@@ -22,27 +23,34 @@ def analyse_data(dogname):
         fd3=open(dogname + "-rh.txt","r+")
         data=fd3.readlines()
         fd3.close()
+	''' so this is the section we remove html and then pick out data we want '''
         for i,line in enumerate(data):
-                nstr=line.replace('<td align="center" valign="middle" ','')
-                ostr=nstr.replace('<td align="center" ','')
-                pstr=ostr.replace('<td align="left" ','')
-                nnstr=pstr.replace('style="white-space:nowrap;">','"')
-                npstr=nnstr.replace('</td>','" ')
-                npstr=npstr.split('<td style=')[0]
-                spltdata=npstr.split('"')
-                if len(spltdata) >10:
-                 if spltdata[19] == '&nbsp;':
-                  spltdata[19]='0'
-                 if spltdata[27] == '&nbsp;':
-                  spltdata[27]='0'
-                 strg=spltdata[1]+","+spltdata[3]+","+spltdata[7] +","+spltdata[9]+","+spltdata[21]+","+spltdata[19]+","+spltdata[25]+","+spltdata[19]+","+spltdata[27]
-                 strg2=strg.replace('"','')
-                 fd.write( strg2 )
-                 fd.write( "\n" )
-                
+            for line in data:
+	       newline = (re.sub('<[^<]+?>', ' ', line))
+	       newline = (re.sub('Race', ' ', newline))
+	       newline = (re.sub('Meeting', ' ', newline))
+	       #print (newline)
+#        sys.exit()
+#        nstr=line.replace('<td align="center" valign="middle" ','')
+#        ostr=nstr.replace('<td align="center" ','')
+#        pstr=ostr.replace('<td align="left" ','')
+#        nnstr=pstr.replace('style="white-space:nowrap;">','"')
+#        npstr=nnstr.replace('</td>','" ')
+#               newline=newline.split()[0]
+#               spltdata=newline.split('"')
+#               if len(spltdata) >10:
+#                if spltdata[19] == '&nbsp;':
+#                 spltdata[19]='0'
+#                if spltdata[27] == '&nbsp;':
+#                 spltdata[27]='0'
+#                strg=spltdata[1]+","+spltdata[3]+","+spltdata[7] +","+spltdata[9]+","+spltdata[21]+","+spltdata[19]+","+spltdata[25]+","+spltdata[19]+","+spltdata[27]
+#                strg2=strg.replace('"','')
+               fd.write( newline )
+#               fd.write( "\n" )
+          
         
         fd.close()
-        calc_moving_average(dogname)
+    #    calc_moving_average(dogname)
         os.remove(dogname + "-rh.txt")
 
 def getdognames():
@@ -75,6 +83,8 @@ def readdogs(dogname):
 
 def extractdata(filedogname,dogname):
         '''  what this function does is to format the downloaded history - basically get rid of the extraneous html '''
+        from HTMLParser import HTMLParser
+
         dogname=dogname.rstrip()
         dogname=dogname.replace("%20","+")
         flag = 1
@@ -82,17 +92,38 @@ def extractdata(filedogname,dogname):
         filedogname2=dogname + "-rh.txt"
         fd2=open(filedogname2,"w")        
         data=fd.readlines()
+
+#	class MLStripper(HTMLParser):
+#	    def __init__(self):
+#		self.reset()
+#		self.fed = []
+#	    def handle_data(self, d):
+#		self.fed.append(d)
+#	    def get_data(self):
+#		return ''.join(self.fed)
+#
+#	def strip_tags(data):
+#	    s = MLStripper()
+#	    s.feed(data)
+#	    return s.get_data()
+#
+#        ndata = strip_tags(data)
+#        fd2.write(ndata)
+
         for line in data:
-           #if '<td class="RCelement"><a href="' in line:
-           if '<td align="center"' in line:
-            fd2.write(line)
-            flag = 0
-           if re.search('\s+\<\/tbody\>',line): 
-            flag = 1
-           if re.search('\s+\<\/tr\>\<tr class="Grid',line):
-            flag = 1
-           if not flag and not '<td align="center"' in line:
-            fd2.write(line)
+	   #if '<td class="RCelement"><a href="' in line:
+	   if '<td align="center"' in line:
+	    fd2.write(line)
+	    flag = 0
+	   if re.search('\s+\<\/tbody\>',line): 
+	    flag = 1
+	   if re.search('\s+\<\/tr\>\<tr class="Grid',line):
+	    flag = 1
+	   if not flag and not '<td align="center"' in line:
+	    fd2.write(line)
+#	for line in data:
+#            newline = (re.sub('<[^<]+?>', '', line))
+#	    fd2.write(newline)
 
 
         fd.close()
@@ -163,6 +194,7 @@ def calc_moving_average(dogname):
        fd3a=open("actualtime-mvavg.out.csv","a")
        fd3s=open("splits-mvavg.out.csv","a")
        fd3wt=open("winnerstime-mvavg.out.csv","a")
+       fdg=open("going.out.csv","a")
       except:
               pass 
       dat=fd.readlines()
@@ -186,6 +218,7 @@ def calc_moving_average(dogname):
           grade=splitline[6]
           pos=pos[:-2]
           pos=int(pos)
+          going=splitline[4]
           calt=splitline[8]
           wint=splitline[7]
           calctime = float(calt) 
@@ -244,6 +277,7 @@ def calc_moving_average(dogname):
       fd3a.close()
       fd3s.close()
       fd3wt.close()
+      fdg.close()
 
 if __name__ == '__main__':
 	main()
