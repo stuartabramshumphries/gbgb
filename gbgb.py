@@ -26,27 +26,13 @@ def analyse_data(dogname):
 	''' so this is the section we remove html and then pick out data we want '''
         for i,line in enumerate(data):
             for line in data:
-	       newline = (re.sub('<[^<]+?>', ' ', line))
+	       newline = (re.sub('<[^<]+?>', ',', line))
 	       newline = (re.sub('Race', ' ', newline))
 	       newline = (re.sub('Meeting', ' ', newline))
-	       #print (newline)
-#        sys.exit()
-#        nstr=line.replace('<td align="center" valign="middle" ','')
-#        ostr=nstr.replace('<td align="center" ','')
-#        pstr=ostr.replace('<td align="left" ','')
-#        nnstr=pstr.replace('style="white-space:nowrap;">','"')
-#        npstr=nnstr.replace('</td>','" ')
-#               newline=newline.split()[0]
-#               spltdata=newline.split('"')
-#               if len(spltdata) >10:
-#                if spltdata[19] == '&nbsp;':
-#                 spltdata[19]='0'
-#                if spltdata[27] == '&nbsp;':
-#                 spltdata[27]='0'
-#                strg=spltdata[1]+","+spltdata[3]+","+spltdata[7] +","+spltdata[9]+","+spltdata[21]+","+spltdata[19]+","+spltdata[25]+","+spltdata[19]+","+spltdata[27]
-#                strg2=strg.replace('"','')
-               fd.write( newline )
-#               fd.write( "\n" )
+	       newline = (re.sub(',,',',',newline))
+	       newline = (re.sub('^[ 	]*,','',newline))
+	       newline = (re.sub(',, ,, ,','',newline))
+	       fd.write(newline)
           
         
         fd.close()
@@ -62,11 +48,6 @@ def getdognames():
                 count+=1
                 print n
                 readdogs(n)
-#        if count != 6:
-#                print "number of dogs is ",count
-#                print "currently only working on 6 dogs, will change in future!"
-#                print "exiting "
-#                exit()
 
 def readdogs(dogname):
         '''  this function reads the primary web page for eachdog '''
@@ -79,7 +60,6 @@ def readdogs(dogname):
         f.close()
         webout.close()
         extractdata(ddogname,dogname)
-        #os.remove(ddogname)
 
 def extractdata(filedogname,dogname):
         '''  what this function does is to format the downloaded history - basically get rid of the extraneous html '''
@@ -93,25 +73,8 @@ def extractdata(filedogname,dogname):
         fd2=open(filedogname2,"w")        
         data=fd.readlines()
 
-#	class MLStripper(HTMLParser):
-#	    def __init__(self):
-#		self.reset()
-#		self.fed = []
-#	    def handle_data(self, d):
-#		self.fed.append(d)
-#	    def get_data(self):
-#		return ''.join(self.fed)
-#
-#	def strip_tags(data):
-#	    s = MLStripper()
-#	    s.feed(data)
-#	    return s.get_data()
-#
-#        ndata = strip_tags(data)
-#        fd2.write(ndata)
 
         for line in data:
-	   #if '<td class="RCelement"><a href="' in line:
 	   if '<td align="center"' in line:
 	    fd2.write(line)
 	    flag = 0
@@ -121,10 +84,6 @@ def extractdata(filedogname,dogname):
 	    flag = 1
 	   if not flag and not '<td align="center"' in line:
 	    fd2.write(line)
-#	for line in data:
-#            newline = (re.sub('<[^<]+?>', '', line))
-#	    fd2.write(newline)
-
 
         fd.close()
         os.remove(filedogname)
@@ -199,7 +158,6 @@ def calc_moving_average(dogname):
               pass 
       dat=fd.readlines()
       data=[]
-      #print "length of data is ", +len(dat)
       
       data_calctime=[]
       data_brkn=[]
