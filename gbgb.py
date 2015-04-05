@@ -14,7 +14,7 @@ def main():
 
 def getdognames():
     dognames="./dognames.txt"
-    ''' this function reads a list of dognames from file '''
+    """ this function reads a list of dognames from file """
     dogname=open(dognames,"r").readlines()
     count=0
     for n in dogname:
@@ -23,7 +23,7 @@ def getdognames():
         readdogs(n)
 
 def readdogs(dogname):
-    '''  this function reads the primary web page for eachdog '''
+    """  this function reads the primary web page for eachdog """
     dogname=dogname.replace(" ","%20")
     f=urllib.urlopen("http://www.gbgb.org.uk/raceCard.aspx?dogName="+dogname)
     ddogname=dogname.rstrip()+".txt"
@@ -35,7 +35,7 @@ def readdogs(dogname):
     extractdata(ddogname,dogname)
 
 def extractdata(filedogname,dogname):
-    '''  what this function does is to format the downloaded history - basically get rid of the extraneous html '''
+    """  what this function does is to format the downloaded history - basically get rid of the extraneous html """
     from HTMLParser import HTMLParser
     dogname=dogname.rstrip()
     dogname=dogname.replace("%20","+")
@@ -60,30 +60,34 @@ def extractdata(filedogname,dogname):
     analyse_data(dogname)
 
 def analyse_data(dogname):
-    '''  this function extracts the dog data we want from its history '''
+    # need to look closer at this as getting 14-15 fields - should be consistent!
+    """  this function extracts the dog data we want from its history """
     count=0
     dogname=dogname.replace("%20","+")
     fd=open(dogname +"-data.csv","w")
     fd3=open(dogname + "-rh.txt","r+")
     data=fd3.readlines()
     fd3.close()
-    ''' so this is the section we remove html and then pick out data we want '''
+    # so this is the section we remove html and then pick out data we want 
     for i,line in enumerate(data):
         for line in data:
             newline = (re.sub('<[^<]+?>', ',', line))
             newline = (re.sub('Race', ' ', newline))
             newline = (re.sub('Meeting', ' ', newline))
             newline = (re.sub(',,',',',newline))
-            newline = (re.sub('^[    ]*,','',newline))
+            newline = (re.sub('^[		]*,','',newline))
             newline = (re.sub(',, ,, ,','',newline))
-            fd.write(newline)
+	    if newline.strip():
+                fd.write(newline)
     fd.close()
     #calc_moving_average(dogname)
     os.remove(dogname + "-rh.txt")
+    sys.exit()
 
 def calc_moving_average(dogname):
-    ''' basically movingaverage(data,period) , where data is a list/tuple? '''
+    """ basically movingaverage(data,period) , where data is a list/tuple? """
     fd4=open("./grades.csv","a")
+    # thinking I should move these ratings into  a separate file?
     ratings={
     'A1':{1:138,2:120,3:112,4:94,5:86,6:78},
     'A2':{1:130,2:112,3:104,4:86,5:78,6:70},
@@ -172,9 +176,8 @@ def calc_moving_average(dogname):
                 data_wint.append(winnerstime)
             if int(rat) != 0:
                 data.append(rat)
-            ''' want to print just last line '''
-            ''' last_line = file(PATH_TO_FILE, "r").readlines()[-1]
-            '''
+            """ want to print just last line 
+             last_line = file(PATH_TO_FILE, "r").readlines()[-1] """
         cnt+=1
     if len(dat) <period:
         period=len(data)
