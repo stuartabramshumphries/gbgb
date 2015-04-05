@@ -78,15 +78,20 @@ def analyse_data(dogname):
             newline = (re.sub('^[		]*,','',newline))
             newline = (re.sub(',, ,, ,','',newline))
 	    if newline.strip():
-	        laststring = [None] * 14
+	        laststring = [None] * 15
 	        txt = newline
-		for i in range(5,0,-1):
-	            laststring[i] = txt.split(',')[-i]
+		for i in range(1,8):
+	            laststring[i] = txt.split(',')[i]
                     fd.write(laststring[i])
+                    fd.write(",") 
+		for j in range(5,0,-1):
+	            laststring[j] = txt.split(',')[-j]
+                    fd.write(laststring[j])
+		    if j != 1:
+                        fd.write(",")
     fd.close()
-    #calc_moving_average(dogname)
+    calc_moving_average(dogname)
     os.remove(dogname + "-rh.txt")
-    sys.exit()
 
 def calc_moving_average(dogname):
     """ basically movingaverage(data,period) , where data is a list/tuple? """
