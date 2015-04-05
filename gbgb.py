@@ -7,7 +7,7 @@ import sys
 import urllib
 
 def main():
-    for name in "./ratings.out.csv","./calctime-mvavg.out.csv","./splits-mvavg.out.csv","./actualtime-mvavg.out.csv","winnerstime-mvavg.out.csv":
+    for name in "./ratings.out.csv","./calctime-mvavg.out.csv","./splits-mvavg.out.csv","winnerstime-mvavg.out.csv":
         if os.path.exists(name):
             os.remove(name)
     getdognames()
@@ -68,7 +68,6 @@ def analyse_data(dogname):
     fd3=open(dogname + "-rh.txt","r+")
     data=fd3.readlines()
     fd3.close()
-    # so this is the section we remove html and then pick out data we want 
     for i,line in enumerate(data):
         for line in data:
             newline = (re.sub('<[^<]+?>', ',', line))
@@ -95,7 +94,6 @@ def analyse_data(dogname):
 
 def calc_moving_average(dogname):
     """ basically movingaverage(data,period) , where data is a list/tuple? """
-    fd4=open("./grades.csv","a")
     # thinking I should move these ratings into  a separate file?
     ratings={
     'A1':{1:138,2:120,3:112,4:94,5:86,6:78},
@@ -146,10 +144,8 @@ def calc_moving_average(dogname):
         fd=open(dogname +"-data.csv","r")
         fd2=open("ratings.out.csv","a")
         fd3=open("calctime-mvavg.out.csv","a")
-        fd3a=open("actualtime-mvavg.out.csv","a")
         fd3s=open("splits-mvavg.out.csv","a")
         fd3wt=open("winnerstime-mvavg.out.csv","a")
-        fdg=open("going.out.csv","a")
     except:
         pass
     dat=fd.readlines()
@@ -158,36 +154,42 @@ def calc_moving_average(dogname):
     data_brkn=[]
     data_wint=[]
     cnt=1
+    # format of line is
+    # 12 columns - from left to right remember 1st is pos 0 last is pos 11
+    # 
+    error = 0
     for line in dat:
         splitline=line.split(",")
-        if len(splitline) == 9:
-            pos=splitline[3]
+        if len(splitline) == 12:
+            pos=splitline[1]
             brk=splitline[2]
             if brk == '&nbsp;':
-                brk='0'
+                brk = 0
             brkn=float(brk)
             data_brkn.append(brkn)
-            grade=splitline[6]
-            pos=pos[:-2]
+            grade=splitline[10]
+            #pos=pos[:-2]
             pos=int(pos)
             going=splitline[4]
-            calt=splitline[8]
             wint=splitline[7]
+            calt=splitline[11]
+	    if "&nbsp;" in calt:
+	        calt = wint
+		error =1
             calctime = float(calt)
             winnerstime = float(wint)
             rat=ratings[grade][pos]
             datal=dogname+","+grade+"\n"
-            if cnt==len(dat):
-                fd4.write(datal)
             if calctime != 0:
                 data_calctime.append(calctime)
             if winnerstime != 0:
                 data_wint.append(winnerstime)
             if int(rat) != 0:
                 data.append(rat)
-            """ want to print just last line 
-             last_line = file(PATH_TO_FILE, "r").readlines()[-1] """
-        cnt+=1
+            cnt+=1
+    if error == 1:
+	print "dont trust " + dogname + " finish time appears wrong"
+	error = 0
     if len(dat) <period:
         period=len(data)
     klist=list(movingaverage(data,period))
@@ -217,10 +219,8 @@ def calc_moving_average(dogname):
     fd3wt.write("\n")
     fd2.close()
     fd3.close()
-    fd3a.close()
     fd3s.close()
     fd3wt.close()
-    fdg.close()
 
 if __name__ == '__main__':
     main()
