@@ -1,21 +1,18 @@
 #!/usr/bin/python
-import urllib
-import re
-import os
-import sys
 from movingaverage import *
 from multiprocessing import Process
+import os
+import re
+import sys
+import urllib
 
 def main():
-    
     for name in "./ratings.out.csv","./calctime-mvavg.out.csv","./splits-mvavg.out.csv","./actualtime-mvavg.out.csv","winnerstime-mvavg.out.csv":
         if os.path.exists(name):
             os.remove(name)
-
     getdognames()
-    
 
-def analyse_data(dogname): 
+def analyse_data(dogname):
         '''  this function extracts the dog data we want from its history '''
         count=0
         dogname=dogname.replace("%20","+")
@@ -33,8 +30,6 @@ def analyse_data(dogname):
 	       newline = (re.sub('^[ 	]*,','',newline))
 	       newline = (re.sub(',, ,, ,','',newline))
 	       fd.write(newline)
-          
-        
         fd.close()
         #calc_moving_average(dogname)
         os.remove(dogname + "-rh.txt")
@@ -64,42 +59,31 @@ def readdogs(dogname):
 def extractdata(filedogname,dogname):
         '''  what this function does is to format the downloaded history - basically get rid of the extraneous html '''
         from HTMLParser import HTMLParser
-
         dogname=dogname.rstrip()
         dogname=dogname.replace("%20","+")
         flag = 1
-        fd=open(filedogname,"r")        
+        fd=open(filedogname,"r")
         filedogname2=dogname + "-rh.txt"
-        fd2=open(filedogname2,"w")        
+        fd2=open(filedogname2,"w")
         data=fd.readlines()
-
-
         for line in data:
 	   if '<td align="center"' in line:
 	    fd2.write(line)
 	    flag = 0
-	   if re.search('\s+\<\/tbody\>',line): 
+	   if re.search('\s+\<\/tbody\>',line):
 	    flag = 1
 	   if re.search('\s+\<\/tr\>\<tr class="Grid',line):
 	    flag = 1
 	   if not flag and not '<td align="center"' in line:
 	    fd2.write(line)
-
         fd.close()
         os.remove(filedogname)
         fd2.close()
         analyse_data(dogname)
 
-         
-
-
-
-
 def calc_moving_average(dogname):
-      
       ''' basically movingaverage(data,period) , where data is a list/tuple? '''
       fd4=open("./grades.csv","a")
-
       ratings={
       'A1':{1:138,2:120,3:112,4:94,5:86,6:78},
       'A2':{1:130,2:112,3:104,4:86,5:78,6:70},
@@ -143,8 +127,7 @@ def calc_moving_average(dogname):
       'IT':{1:138,2:120,3:112,4:94,5:86,6:78},
       'IV':{1:138,2:120,3:112,4:94,5:86,6:78}
       }
-
-# we now want to add the moving average of the actual, not calculated time and also for the split time.
+      # we now want to add the moving average of the actual, not calculated time and also for the split time.
       period=4 # arbitrary here - maybe ask what moving average you want at the start?
       try:
        fd=open(dogname +"-data.csv","r")
@@ -155,15 +138,13 @@ def calc_moving_average(dogname):
        fd3wt=open("winnerstime-mvavg.out.csv","a")
        fdg=open("going.out.csv","a")
       except:
-              pass 
+              pass
       dat=fd.readlines()
       data=[]
-      
       data_calctime=[]
       data_brkn=[]
       data_wint=[]
       cnt=1
-
       for line in dat:
          splitline=line.split(",")
          if len(splitline) == 9:
@@ -179,8 +160,8 @@ def calc_moving_average(dogname):
           going=splitline[4]
           calt=splitline[8]
           wint=splitline[7]
-          calctime = float(calt) 
-          winnerstime = float(wint) 
+          calctime = float(calt)
+          winnerstime = float(wint)
           rat=ratings[grade][pos]
           datal=dogname+","+grade+"\n"
           if cnt==len(dat):
@@ -197,19 +178,14 @@ def calc_moving_average(dogname):
          cnt+=1
       if len(dat) <period:
           period=len(data)
-
       klist=list(movingaverage(data,period))
       klist=[int(elem) for elem in klist ]
-
       klist2=list(movingaverage(data_calctime,period))
       klist2=[round(elem,2) for elem in klist2]
-
       klist3=list(movingaverage(data_brkn,period))
       klist3=[round(elem,2) for elem in klist3]
-
       klist4=list(movingaverage(data_wint,period))
       klist4=[round(elem,2) for elem in klist4]
-
       dogname=dogname.replace('%20','+')
       v=(dogname,klist)
       v2=(dogname,klist2)
@@ -227,9 +203,6 @@ def calc_moving_average(dogname):
       fd3.write("\n")
       fd3s.write("\n")
       fd3wt.write("\n")
-
-
-
       fd2.close()
       fd3.close()
       fd3a.close()
