@@ -12,28 +12,6 @@ def main():
             os.remove(name)
     getdognames()
 
-def analyse_data(dogname):
-        '''  this function extracts the dog data we want from its history '''
-        count=0
-        dogname=dogname.replace("%20","+")
-        fd=open(dogname +"-data.csv","w")
-        fd3=open(dogname + "-rh.txt","r+")
-        data=fd3.readlines()
-        fd3.close()
-	''' so this is the section we remove html and then pick out data we want '''
-        for i,line in enumerate(data):
-            for line in data:
-	       newline = (re.sub('<[^<]+?>', ',', line))
-	       newline = (re.sub('Race', ' ', newline))
-	       newline = (re.sub('Meeting', ' ', newline))
-	       newline = (re.sub(',,',',',newline))
-	       newline = (re.sub('^[ 	]*,','',newline))
-	       newline = (re.sub(',, ,, ,','',newline))
-	       fd.write(newline)
-        fd.close()
-        #calc_moving_average(dogname)
-        os.remove(dogname + "-rh.txt")
-
 def getdognames():
         dognames="./dognames.txt"
         ''' this function reads a list of dognames from file '''
@@ -80,6 +58,28 @@ def extractdata(filedogname,dogname):
         os.remove(filedogname)
         fd2.close()
         analyse_data(dogname)
+
+def analyse_data(dogname):
+        '''  this function extracts the dog data we want from its history '''
+        count=0
+        dogname=dogname.replace("%20","+")
+        fd=open(dogname +"-data.csv","w")
+        fd3=open(dogname + "-rh.txt","r+")
+        data=fd3.readlines()
+        fd3.close()
+	''' so this is the section we remove html and then pick out data we want '''
+        for i,line in enumerate(data):
+            for line in data:
+	       newline = (re.sub('<[^<]+?>', ',', line))
+	       newline = (re.sub('Race', ' ', newline))
+	       newline = (re.sub('Meeting', ' ', newline))
+	       newline = (re.sub(',,',',',newline))
+	       newline = (re.sub('^[ 	]*,','',newline))
+	       newline = (re.sub(',, ,, ,','',newline))
+	       fd.write(newline)
+        fd.close()
+        #calc_moving_average(dogname)
+        os.remove(dogname + "-rh.txt")
 
 def calc_moving_average(dogname):
       ''' basically movingaverage(data,period) , where data is a list/tuple? '''
