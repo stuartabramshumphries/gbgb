@@ -78,7 +78,11 @@ def analyse_data(dogname):
             newline = (re.sub('^[		]*,','',newline))
             newline = (re.sub(',, ,, ,','',newline))
 	    if newline.strip():
-                fd.write(newline)
+	        laststring = [None] * 14
+	        txt = newline
+		for i in range(5,0,-1):
+	            laststring[i] = txt.split(',')[-i]
+                    fd.write(laststring[i])
     fd.close()
     #calc_moving_average(dogname)
     os.remove(dogname + "-rh.txt")
