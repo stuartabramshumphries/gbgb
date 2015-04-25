@@ -1,10 +1,10 @@
 #!/usr/bin/python
-from movingaverage import *
-from multiprocessing import Process
 import os
 import re
 import sys
 import urllib
+from movingaverage import *
+from multiprocessing import Process
 
 def main():
     for name in "./ratings.out.csv","./calctime-mvavg.out.csv","./splits-mvavg.out.csv","winnerstime-mvavg.out.csv":
@@ -45,6 +45,8 @@ def extractdata(filedogname,dogname):
     fd2=open(filedogname2,"w")
     data=fd.readlines()
     for line in data:
+        if 'nbsp' in line:
+            line = "" 
         if '<td align="center"' in line:
             fd2.write(line)
             flag = 0
