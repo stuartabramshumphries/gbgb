@@ -91,7 +91,6 @@ def analyse_data(dogname):
                     fd.write(",")
 
     fd.close()
-    sys.exit()
     print "hi ho its off to ma we go"
     calc_moving_average(dogname)
     os.remove(dogname + "-rh.txt")
