@@ -70,27 +70,29 @@ def analyse_data(dogname):
     fd3=open(dogname + "-rh.txt","r+")
     data=fd3.readlines()
     fd3.close()
-    for i,line in enumerate(data):
-        for line in data:
-            newline = (re.sub('<[^<]+?>', ',', line))
-            newline = (re.sub('Race', ' ', newline))
-            newline = (re.sub('Meeting', ' ', newline))
-            newline = (re.sub(',,',',',newline))
-            newline = (re.sub('^[		]*,','',newline))
-            newline = (re.sub(',, ,, ,','',newline))
-	    if newline.strip():
-	        laststring = [None] * 15
-	        txt = newline
-		for i in range(1,8):
-	            laststring[i] = txt.split(',')[i]
-                    fd.write(laststring[i])
-                    fd.write(",") 
-		for j in range(5,0,-1):
-	            laststring[j] = txt.split(',')[-j]
-                    fd.write(laststring[j])
-		    if j != 1:
-                        fd.write(",")
+    for i,lline in enumerate(data):
+        newline = (re.sub('<[^<]+?>', ',', lline))
+        newline = (re.sub('Race', ' ', newline))
+        newline = (re.sub('Meeting', ' ', newline))
+        newline = (re.sub(',,',',',newline))
+        newline = (re.sub('^[		]*,','',newline))
+        newline = (re.sub(',, ,, ,','',newline))
+	laststring = [None] * 15
+	txt = newline
+        if newline.strip():
+            for i in range(1,8):
+	        laststring[i] = txt.split(',')[i]
+                fd.write(laststring[i])
+                fd.write(",") 
+	    for j in range(5,0,-1):
+	        laststring[j] = txt.split(',')[-j]
+                fd.write(laststring[j])
+	        if j != 1:
+                    fd.write(",")
+
     fd.close()
+    sys.exit()
+    print "hi ho its off to ma we go"
     calc_moving_average(dogname)
     os.remove(dogname + "-rh.txt")
 
