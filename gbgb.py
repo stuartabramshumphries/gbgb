@@ -1,4 +1,5 @@
 #!/usr/bin/python
+
 import os
 import re
 import sys
@@ -13,8 +14,8 @@ def main():
     getdognames()
 
 def getdognames():
-    dognames="./dognames.txt"
     """ this function reads a list of dognames from file """
+    dognames="./dognames.txt"
     dogname=open(dognames,"r").readlines()
     count=0
     for n in dogname:
@@ -62,7 +63,6 @@ def extractdata(filedogname,dogname):
     analyse_data(dogname)
 
 def analyse_data(dogname):
-    # need to look closer at this as getting 14-15 fields - should be consistent!
     """  this function extracts the dog data we want from its history """
     count=0
     dogname=dogname.replace("%20","+")
@@ -248,6 +248,7 @@ def calc_moving_average(dogname):
     if len(dat) <period:
         period=len(data)
         print period
+    # from here to end of function needs a sort out.
     klist=list(movingaverage(data,period))
     klist=[int(elem) for elem in klist ]
     klist2=list(movingaverage(data_calctime,period))
@@ -279,4 +280,5 @@ def calc_moving_average(dogname):
     fd3wt.close()
 
 if __name__ == '__main__':
+    # maybe just maybe put some error checking here
     main()
