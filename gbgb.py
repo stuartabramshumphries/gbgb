@@ -202,6 +202,7 @@ def calc_moving_average(dogname):
         fd3s=open("splits-mvavg.out.csv","a")
         fd3wt=open("winnerstime-mvavg.out.csv","a")
         fd3po=open("position-mvavg.out.csv","a")
+        fd4po=open("position.out.csv","a")
     except:
         pass
     dat=fd.readlines()
@@ -263,6 +264,7 @@ def calc_moving_average(dogname):
     klist4=[round(elem,2) for elem in klist4]
     klist5=list(movingaverage(data_pos,period))
     klist5=[round(elem,2) for elem in klist5]
+    klist6=list(data_pos)
     dogname=dogname.replace('%20','+')
     v=(dogname,klist)
     v1=(dogname,klist1)
@@ -270,27 +272,32 @@ def calc_moving_average(dogname):
     v3=(dogname,klist3)
     v4=(dogname,klist4)
     v5=(dogname,klist5)
+    v6=(dogname,klist6)
     value=str(v)
     value1=str(v1)
     value2=str(v2)
     value3=str(v3)
     value4=str(v4)
     value5=str(v5)
+    value6=str(v6)
     fd2.write(value)
     fd3.write(value2)
     fd3s.write(value3)
     fd3wt.write(value4)
     fd3po.write(value5)
+    fd4po.write(value6)
     fd2.write("\n")
     fd3.write("\n")
     fd3s.write("\n")
     fd3wt.write("\n")
     fd3po.write("\n")
+    fd4po.write("\n")
     fd2.close()
     fd3.close()
     fd3s.close()
     fd3wt.close()
     fd3po.close()
+    fd4po.close()
 
 if __name__ == '__main__':
     # maybe just maybe put some error checking here
