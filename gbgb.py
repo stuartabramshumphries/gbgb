@@ -20,7 +20,7 @@ def getdognames():
     count=0
     for n in dogname:
         count+=1
-        print n
+        #print n
         readdogs(n)
 
 def readdogs(dogname):
@@ -216,7 +216,7 @@ def calc_moving_average(dogname):
     for line in dat:
         splitline=line.split(",")
         if len(splitline) == 12:
-            pos=splitline[1]
+            pos=splitline[3]
             brk=splitline[2]
             if brk == '&nbsp;':
                 brk = 0
@@ -225,6 +225,7 @@ def calc_moving_average(dogname):
             grade=splitline[10]
             #pos=pos[:-2]
             pos=int(pos)
+            print  pos
             going=splitline[4]
             wint=splitline[7]
             calt=splitline[11]
@@ -251,6 +252,8 @@ def calc_moving_average(dogname):
     # from here to end of function needs a sort out.
     klist=list(movingaverage(data,period))
     klist=[int(elem) for elem in klist ]
+    klist1=list(movingaverage(data_calctime,period))
+    klist1=[round(elem,2) for elem in klist1]
     klist2=list(movingaverage(data_calctime,period))
     klist2=[round(elem,2) for elem in klist2]
     klist3=list(movingaverage(data_brkn,period))
@@ -259,10 +262,12 @@ def calc_moving_average(dogname):
     klist4=[round(elem,2) for elem in klist4]
     dogname=dogname.replace('%20','+')
     v=(dogname,klist)
+    v1=(dogname,klist1)
     v2=(dogname,klist2)
     v3=(dogname,klist3)
     v4=(dogname,klist4)
     value=str(v)
+    value1=str(v1)
     value2=str(v2)
     value3=str(v3)
     value4=str(v4)
