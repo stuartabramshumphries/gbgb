@@ -227,6 +227,11 @@ def calc_moving_average(dogname):
             data_brkn.append(brkn)
             grade=splitline[10]
             pos=int(pos)
+            # this is to ensure position is within range
+            if 1 <= pos <=6:
+                pass
+            else:
+                pos = 6
             going=splitline[4]
             wint=splitline[7]
             calt=splitline[11]
