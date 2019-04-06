@@ -91,7 +91,7 @@ def analyse_data(dogname):
                     fd.write(",")
 
     fd.close()
-    #calc_moving_average(dogname)
+    calc_moving_average(dogname)
     os.remove(dogname + "-rh.txt")
 
 def calc_moving_average(dogname):
@@ -232,9 +232,9 @@ def calc_moving_average(dogname):
                 pass
             else:
                 pos = 6
-            going=splitline[4]
-            wint=splitline[7]
-            calt=splitline[11]
+            going=splitline[9]
+            wint=splitline[8]
+            calt=splitline[12]
 	    if "&nbsp;" in calt:
 	        calt = wint
 		error =1
