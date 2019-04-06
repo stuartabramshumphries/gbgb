@@ -86,7 +86,9 @@ def analyse_data(dogname):
             for j in range(6,0,-1):
                 laststring[j] = txt.split(',')[-j]
                 fd.write(laststring[j])
-                if j != 1:
+                if j == 4:
+                    fd.write(", ")
+                elif j != 1:
                     fd.write(",")
     fd.close()
     calc_moving_average(dogname)
