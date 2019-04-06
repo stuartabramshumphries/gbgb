@@ -47,7 +47,7 @@ def extractdata(filedogname,dogname):
     data=fd.readlines()
     for line in data:
         if 'nbsp' in line:
-            line = "" 
+            line = ""
         if '<td align="center"' in line:
             fd2.write(line)
             flag = 0
@@ -80,10 +80,10 @@ def analyse_data(dogname):
 	laststring = [None] * 15
 	txt = newline
         if newline.strip():
-            for i in range(1,8):
+            for i in range(0,8):
 	        laststring[i] = txt.split(',')[i]
                 fd.write(laststring[i])
-                fd.write(",") 
+                fd.write(",")
 	    for j in range(5,0,-1):
 	        laststring[j] = txt.split(',')[-j]
                 fd.write(laststring[j])
@@ -91,7 +91,7 @@ def analyse_data(dogname):
                     fd.write(",")
 
     fd.close()
-    calc_moving_average(dogname)
+    #calc_moving_average(dogname)
     os.remove(dogname + "-rh.txt")
 
 def calc_moving_average(dogname):
@@ -214,18 +214,18 @@ def calc_moving_average(dogname):
     cnt=1
     # format of line is
     # 12 columns - from left to right remember 1st is pos 0 last is pos 11
-    # 
+    #
     error = 0
     for line in dat:
         splitline=line.split(",")
-        if len(splitline) == 12:
-            pos=splitline[3]
-            brk=splitline[2]
+        if len(splitline) == 13:
+            pos=splitline[4]
+            brk=splitline[3]
             if brk == '&nbsp;':
                 brk = 0
             brkn=float(brk)
             data_brkn.append(brkn)
-            grade=splitline[10]
+            grade=splitline[11]
             pos=int(pos)
             # this is to ensure position is within range
             if 1 <= pos <=6:
