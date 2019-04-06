@@ -20,7 +20,6 @@ def getdognames():
     count=0
     for n in dogname:
         count+=1
-        #print n
         readdogs(n)
 
 def readdogs(dogname):
@@ -77,26 +76,24 @@ def analyse_data(dogname):
         newline = (re.sub(',,',',',newline))
         newline = (re.sub('^[		]*,','',newline))
         newline = (re.sub(',, ,, ,','',newline))
-	laststring = [None] * 15
-	txt = newline
+        laststring = [None] * 15
+        txt = newline
         if newline.strip():
             for i in range(0,8):
-	        laststring[i] = txt.split(',')[i]
+                laststring[i] = txt.split(',')[i]
                 fd.write(laststring[i])
                 fd.write(",")
-	    for j in range(5,0,-1):
-	        laststring[j] = txt.split(',')[-j]
+            for j in range(6,0,-1):
+                laststring[j] = txt.split(',')[-j]
                 fd.write(laststring[j])
-	        if j != 1:
+                if j != 1:
                     fd.write(",")
-
     fd.close()
-    calc_moving_average(dogname)
-    os.remove(dogname + "-rh.txt")
+    #calc_moving_average(dogname)
+    #os.remove(dogname + "-rh.txt")
 
 def calc_moving_average(dogname):
     """ basically movingaverage(data,period) , where data is a list/tuple? """
-    # thinking I should move these ratings into  a separate file?
     ratings={
     'A1':{1:110,2:108,3:106,4:104,5:102,6:100},
     'A2':{1:100,2:98,3:96,4:94,5:92,6:90},
@@ -212,9 +209,6 @@ def calc_moving_average(dogname):
     data_wint=[]
     data_pos=[]
     cnt=1
-    # format of line is
-    # 12 columns - from left to right remember 1st is pos 0 last is pos 11
-    #
     error = 0
     for line in dat:
         splitline=line.split(",")
@@ -305,5 +299,4 @@ def calc_moving_average(dogname):
     fd4po.close()
 
 if __name__ == '__main__':
-    # maybe just maybe put some error checking here
     main()
