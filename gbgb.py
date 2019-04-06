@@ -89,8 +89,8 @@ def analyse_data(dogname):
                 if j != 1:
                     fd.write(",")
     fd.close()
-    #calc_moving_average(dogname)
-    #os.remove(dogname + "-rh.txt")
+    calc_moving_average(dogname)
+    os.remove(dogname + "-rh.txt")
 
 def calc_moving_average(dogname):
     """ basically movingaverage(data,period) , where data is a list/tuple? """
@@ -212,23 +212,23 @@ def calc_moving_average(dogname):
     error = 0
     for line in dat:
         splitline=line.split(",")
-        if len(splitline) == 13:
+        if len(splitline) == 14:
             pos=splitline[4]
             brk=splitline[3]
             if brk == '&nbsp;':
                 brk = 0
             brkn=float(brk)
             data_brkn.append(brkn)
-            grade=splitline[11]
+            grade=splitline[12]
             pos=int(pos)
             # this is to ensure position is within range
             if 1 <= pos <=6:
                 pass
             else:
                 pos = 6
-            going=splitline[9]
-            wint=splitline[8]
-            calt=splitline[12]
+            going=splitline[10]
+            wint=splitline[9]
+            calt=splitline[13]
 	    if "&nbsp;" in calt:
 	        calt = wint
 		error =1
