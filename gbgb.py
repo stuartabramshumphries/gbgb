@@ -45,8 +45,8 @@ def extractdata(filedogname,dogname):
     fd2=open(filedogname2,"w")
     data=fd.readlines()
     for line in data:
-    #    if 'nbsp' in line:
-    #       line = ""
+        if 'nbsp' in line:
+            line = ""
         if '<td align="center"' in line:
             fd2.write(line)
             flag = 0
@@ -90,7 +90,7 @@ def analyse_data(dogname):
                     fd.write(",")
     fd.close()
     calc_moving_average(dogname)
-    #os.remove(dogname + "-rh.txt")
+    os.remove(dogname + "-rh.txt")
 
 def calc_moving_average(dogname):
     """ basically movingaverage(data,period) , where data is a list/tuple? """
@@ -249,7 +249,7 @@ def calc_moving_average(dogname):
 	error = 0
     if len(dat) <period:
         period=len(data)
-        print period
+        # print period
     # from here to end of function needs a sort out.
     klist=list(movingaverage(data,period))
     klist=[int(elem) for elem in klist ]
